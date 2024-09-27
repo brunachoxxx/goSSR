@@ -1,0 +1,121 @@
+<div
+    class="container"
+    style="
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+        justify-content: center;
+        margin: 2rem;
+    "
+    x-data="{
+        resetForm: {{.ResetForm}},
+        fileError: '',
+        validateFile(event) {
+            const file = event.target.files[0];
+            if (file && file.size > 5 * 1024 * 1024) {
+                this.fileError = 'File size exceeds 5MB limit';
+            } else {
+                this.fileError = '';
+            }
+        }
+    }"
+    x-init="$watch('resetForm', function(newValue) {
+        if (newValue) {
+            $refs.uploadForm.reset();
+            resetForm = false;
+        }
+    })"
+>
+    <h1>{{.Title}}</h1>
+    <p>{{.Greeting}}</p>
+
+    {{if not .IsLoggedIn}}
+    <div>
+        <a
+            href="/auth/google"
+            style="
+                display: inline-block;
+                background-color: #4285f4;
+                color: white;
+                padding: 10px 20px;
+                text-decoration: none;
+                border-radius: 5px;
+                font-family: Arial, sans-serif;
+            "
+        >
+            Login with Google
+        </a>
+    </div>
+    {{else}}
+    <p>Welcome back, {{.UserEmail}}!</p>
+    {{end}} {{if .Error}}
+    <p style="color: red">{{.Error}}</p>
+    {{end}} {{if .ProcessedImage}}
+    <p style="color: green">{{.Success}}</p>
+    <h3>Processed Image:</h3>
+    <img
+        src="data:image/jpeg;base64,{{.ProcessedImage}}"
+        alt="Processed Image"
+    />
+    {{end}} {{if .IsLoggedIn}}
+    <form
+        x-ref="uploadForm"
+        action="/upload"
+        method="POST"
+        enctype="multipart/form-data"
+    >
+        <input
+            type="text"
+            name="email"
+            id="name"
+            placeholder="example@example.com"
+            value="{{if .UserEmail}}{{.UserEmail}}{{end}}"
+        />
+
+        <input
+            type="file"
+            name="file"
+            accept="image/jpeg,image/png"
+            @change="validateFile($event)"
+        />
+        <p x-show="fileError" x-text="fileError" style="color: red"></p>
+        <div style="display: flex; justify-content: flex-end">
+            <input
+                type="submit"
+                value="Submit"
+                :disabled="fileError !== ''"
+                style="width: 200px"
+            />
+        </div>
+    </form>
+    <div>
+        {{if .FlashMessage}}
+        <div class="flash-message">{{.FlashMessage}}</div>
+        {{end}} {{if .UserImages}}
+        <h3>Your Images:</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px">
+            {{range .UserImages}}
+            <div class="image-container">
+                <img
+                    src="data:image/jpeg;base64,{{.Base64String}}"
+                    alt="User Image"
+                    width="250px"
+                />
+                <form
+                    method="POST"
+                    action="/delete/{{.ID}}"
+                    onsubmit="return confirm('Are you sure you want to delete this image?');"
+                >
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+
+            {{end}}
+        </div>
+        {{else}}
+        <p>No images uploaded yet.</p>
+        {{end}}
+    </div>
+    {{end}}
+</div>

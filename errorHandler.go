@@ -16,8 +16,17 @@ func CustomeErrorHandler(c *fiber.Ctx, err error) error {
 	// Set the status code for the response
 	c.Status(code)
 
+	data := fiber.Map{
+		"PageTitle":   "Error",
+		"Title":       "An Error Occurred",
+		"Description": "We encountered an error while processing your request.",
+		"Error":       err.Error(),
+		"StatusCode":  code,
+	}
+
+	// Add NavItems if you want to show navigation on the error page
+	// data["NavItems"] = ... // Add your navigation items here
+
 	// Render the error page with the layout, passing the error message
-	return c.Render("error", fiber.Map{
-		"Error": err.Error(),
-	}, "layouts/main")
+	return c.Render("error", data, "layouts/main")
 }

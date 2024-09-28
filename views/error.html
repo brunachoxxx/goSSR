@@ -1,9 +1,7 @@
-<title>Error - {{.Error}}</title>
-</head>
-<body>
-    <h1>An Error Occurred</h1>
-    <p>{{.Error}}</p>
-
-    <a href="/">Go back to the homepage</a>
-</body>
-</html>
+<div class="container">
+    <h1>{{.Title}}</h1>
+    <p>{{.Description}}</p>
+    <p><strong>Error:</strong> {{.Error}}</p>
+    <p><strong>Status Code:</strong> {{.StatusCode}}</p>
+    <a href="/" role="button">Go back to the homepage</a>
+</div>

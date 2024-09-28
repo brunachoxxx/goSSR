@@ -118,6 +118,12 @@ func (h *Handler) HandleUpload(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "Failed to find user")
 	}
 
+	// Check user image count
+	err = h.checkImageCount(googleID.(string))
+	if err != nil {
+		return err
+	}
+
 	// Check if the image already exists for this user
 	var existingImage database.Image
 	err = h.DB.Where("user_google_id = ? AND base64_string = ?", googleID, base64String).First(&existingImage).Error
@@ -289,4 +295,19 @@ func (h *Handler) ShowDialog(c *fiber.Ctx, title, content, confirmText, target, 
 	data["DialogTarget"] = target
 	data["Method"] = method
 	return c.Render("index", data, "layouts/main")
+}
+
+const MaxImagesPerUser = 5
+
+func (h *Handler) checkImageCount(googleID string) error {
+	var count int64
+	if err := h.DB.Model(&database.Image{}).Where("user_google_id = ?", googleID).Count(&count).Error; err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "Failed to count user images")
+	}
+
+	if count >= MaxImagesPerUser {
+		return fiber.NewError(fiber.StatusBadRequest, "You have reached the maximum number of allowed images (5)")
+	}
+
+	return nil
 }

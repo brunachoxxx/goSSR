@@ -96,17 +96,22 @@
         <h3>Your Images:</h3>
         <div style="display: flex; flex-wrap: wrap; gap: 10px">
             {{range .UserImages}}
-            <div class="image-container">
-                <img
-                    src="data:image/jpeg;base64,{{.Base64String}}"
-                    alt="User Image"
-                    width="250px"
-                />
-                <form method="POST" action="/delete-dialog/{{.ID}}">
-                    <button type="submit">Delete</button>
-                </form>
+            <div class="profile-picture flip">
+                <div class="flipper">
+                    <div class="front">
+                        <img
+                            src="data:image/jpeg;base64,{{.Base64String}}"
+                            alt="User Image"
+                            width="250px"
+                        />
+                    </div>
+                    <div class="back">
+                        <form method="POST" action="/delete-dialog/{{.ID}}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-
             {{end}}
         </div>
         {{else}}
@@ -115,3 +120,49 @@
     </div>
     {{end}}
 </div>
+<style>
+    .profile-picture.flip {
+        width: 200px;
+        height: 200px;
+        perspective: 1000px;
+    }
+
+    .profile-picture.flip .flipper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    .profile-picture.flip:hover .flipper {
+        transform: rotateY(180deg);
+    }
+
+    .profile-picture.flip .front,
+    .profile-picture.flip .back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 7px solid #fff; /* White border for a clean look */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    }
+
+    .profile-picture.flip .front img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .profile-picture.flip .back {
+        background-color: #3498db;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform: rotateY(180deg);
+    }
+</style>

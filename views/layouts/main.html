@@ -9,11 +9,7 @@
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
         />
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css"
-        />
-
+        <script src="//code.iconify.design/1/1.0.6/iconify.min.js"></script>
         <script
             defer
             src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"
@@ -42,7 +38,7 @@
                 {{end}} {{if .IsLoggedIn}}
                 <li>
                     <a href="/logout-dialog" role="button">
-                        <i class="mdi mdi-logout"></i>
+                        <span class="iconify" data-icon="mdi-logout"></span>
                     </a>
                 </li>
 

@@ -79,23 +79,38 @@
             @change="validateFile($event)"
         />
         <p x-show="fileError" x-text="fileError" style="color: red"></p>
-        <div style="display: flex; justify-content: flex-end">
+        <div
+            style="
+                display: flex;
+                justify-content: space-between;
+                align-items: normal;
+                gap: 10px;
+            "
+        >
+            {{if .UserImages}} {{if .IsPolaroid}}<a href="/" role="button"
+                >Normal</a
+            >{{else}}<a href="/polaroid" role="button">Polaroid</a>{{end}}
             <input
                 type="submit"
-                value="Submit"
+                value="Load Image"
                 :disabled="fileError !== ''"
-                style="width: 200px"
+                style="max-width: 180px; margin-bottom: 0"
             />
         </div>
     </form>
     <div>
         {{if .FlashMessage}}
         <div class="flash-message">{{.FlashMessage}}</div>
-        {{end}} {{if .UserImages}} {{if .IsPolaroid}}<a href="/" role="button"
-            >Normal</a
-        >{{else}}<a href="/polaroid" role="button">Polaroid</a>{{end}}
+        {{end}}
         <h3>Your Images:</h3>
-        <div style="display: flex; flex-wrap: wrap; gap: 20px">
+        <div
+            style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                justify-content: center;
+            "
+        >
             {{if .IsPolaroid}} {{range .UserImages}} {{template
             "partials/polaroid-pics" .}} {{end}} {{else}} {{range .UserImages}}
             {{template "partials/profile-pics" .}} {{end}} {{end}}

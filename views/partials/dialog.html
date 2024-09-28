@@ -1,0 +1,41 @@
+<dialog {{if .ShowDialog}}open{{end}}>
+    <article>
+        <header>
+            <h3>{{.DialogTitle}}</h3>
+        </header>
+        <p>{{.DialogContent}}</p>
+        <footer
+            style="
+                display: flex;
+                justify-content: space-between;
+                align-items: stretch;
+            "
+        >
+            <a
+                href="/"
+                role="button"
+                class="dialog-close"
+                style="
+                    flex: 1;
+                    margin-right: 10px;
+                    height: 65px;
+                    text-align: center;
+                "
+                >Close</a
+            >
+            <form
+                action="{{.DialogTarget}}"
+                method="{{.Method}}"
+                style="flex: 1"
+            >
+                <button
+                    type="submit"
+                    class="dialog-confirm"
+                    style="width: 100%; height: 65px"
+                >
+                    {{.ConfirmText}}
+                </button>
+            </form>
+        </footer>
+    </article>
+</dialog>

@@ -41,7 +41,7 @@
                 </li>
                 {{end}} {{if .IsLoggedIn}}
                 <li>
-                    <a href="/logout" role="button">
+                    <a href="/logout-dialog" role="button">
                         <i class="mdi mdi-logout"></i>
                     </a>
                 </li>
@@ -50,6 +50,7 @@
             </ul>
         </nav>
         <main class="container">{{embed}}</main>
+        {{template "partials/dialog" .}}
         <footer>...</footer>
     </body>
 </html>

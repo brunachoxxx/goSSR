@@ -19,5 +19,5 @@ func Setup(app *fiber.App, db *gorm.DB) {
 	app.Get("/auth/google/callback", authHandler.GoogleCallbackHandler)
 	app.Get("/logout", authHandler.HandleLogout)
 	app.Post("/delete/:id", h.HandleDeleteImage)
-
+	app.Get("/logout-dialog", h.HandleLogoutDialog)
 }

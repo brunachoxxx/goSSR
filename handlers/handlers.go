@@ -161,6 +161,45 @@ func (h *Handler) HandleUpload(c *fiber.Ctx) error {
 
 }
 
+func (h *Handler) HandleDeleteImage(c *fiber.Ctx) error {
+	imageID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid image ID"})
+	}
+
+	// Get the current user from the session
+	sess, userGoogleID, err := GetSessionAndUserID(c)
+	if err != nil {
+		return err // This will automatically send a 401 Unauthorized response
+	}
+
+	// Delete the image
+	result := h.DB.Where("id = ? AND user_google_id = ?", imageID, userGoogleID).Delete(&database.Image{})
+	if result.Error != nil {
+		sess.Set("flash", "Failed to delete image")
+		if err := sess.Save(); err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Failed to save session")
+		}
+		return c.Redirect("/")
+	}
+
+	if result.RowsAffected == 0 {
+		sess.Set("flash", "Image not found or not owned by user")
+		if err := sess.Save(); err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Failed to save session")
+		}
+		return c.Redirect("/")
+	}
+
+	// Set success flash message
+	sess.Set("flash", "Image deleted successfully")
+	if err := sess.Save(); err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "Failed to save session")
+	}
+
+	return c.Redirect("/")
+}
+
 func (h *Handler) HandleAbout(c *fiber.Ctx) error {
 	data := baseTemplateData("About Us", "Learn more about our company", "/about")
 	return c.Render("about", data, "layouts/main")
@@ -172,6 +211,7 @@ func (h *Handler) prepareIndexData(c *fiber.Ctx, googleID interface{}) (fiber.Ma
 	data["ResetForm"] = false
 	data["Error"] = ""
 	data["IsLoggedIn"] = googleID != nil
+	data["ShowDialog"] = false
 
 	if googleID != nil {
 		var user database.User
@@ -213,59 +253,6 @@ func getAllUserImages(googleID string, db *gorm.DB) ([]database.Image, error) {
 	return images, err
 }
 
-func (h *Handler) deleteSingleUserImage(googleID, base64String string) error {
-	var image database.Image
-	err := h.DB.Where("user_google_id = ? AND base64_string = ?", googleID, base64String).First(&image).Error
-	if err != nil {
-		return err
-	}
-
-	if err := h.DB.Delete(&image).Error; err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (h *Handler) HandleDeleteImage(c *fiber.Ctx) error {
-	imageID, err := c.ParamsInt("id")
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid image ID"})
-	}
-
-	// Get the current user from the session
-	sess, userGoogleID, err := GetSessionAndUserID(c)
-	if err != nil {
-		return err // This will automatically send a 401 Unauthorized response
-	}
-
-	// Delete the image
-	result := h.DB.Where("id = ? AND user_google_id = ?", imageID, userGoogleID).Delete(&database.Image{})
-	if result.Error != nil {
-		sess.Set("flash", "Failed to delete image")
-		if err := sess.Save(); err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Failed to save session")
-		}
-		return c.Redirect("/")
-	}
-
-	if result.RowsAffected == 0 {
-		sess.Set("flash", "Image not found or not owned by user")
-		if err := sess.Save(); err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Failed to save session")
-		}
-		return c.Redirect("/")
-	}
-
-	// Set success flash message
-	sess.Set("flash", "Image deleted successfully")
-	if err := sess.Save(); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Failed to save session")
-	}
-
-	return c.Redirect("/")
-}
-
 func GetSessionAndUserID(c *fiber.Ctx) (*session.Session, interface{}, error) {
 	sess, ok := c.Locals("session").(*session.Session)
 	if !ok || sess == nil {
@@ -278,4 +265,19 @@ func GetSessionAndUserID(c *fiber.Ctx) (*session.Session, interface{}, error) {
 	}
 
 	return sess, userGoogleID, nil
+}
+
+func (h *Handler) HandleLogoutDialog(c *fiber.Ctx) error {
+	return h.ShowDialog(c, "Logout", "Are you sure you want to logout?", "Yes", "/logout", "GET")
+}
+
+func (h *Handler) ShowDialog(c *fiber.Ctx, title, content, confirmText, target, method string) error {
+	data := baseTemplateData("Dialog", "Show dialog", "/dialog")
+	data["ShowDialog"] = true
+	data["DialogTitle"] = title
+	data["DialogContent"] = content
+	data["ConfirmText"] = confirmText
+	data["DialogTarget"] = target
+	data["Method"] = method
+	return c.Render("index", data, "layouts/main")
 }

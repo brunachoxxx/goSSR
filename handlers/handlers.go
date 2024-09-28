@@ -224,6 +224,20 @@ func (h *Handler) HandleDeleteImageDialog(c *fiber.Ctx) error {
 	return h.ShowDialog(c, "Delete Image", "Are you sure you want to delete this image?", "Delete", "/delete/"+imageID, "POST")
 }
 
+func (h *Handler) HandlePolaroid(c *fiber.Ctx) error {
+	_, googleID, err := GetSessionAndUserID(c)
+	if err != nil {
+		return err // This will automatically send a 401 Unauthorized response
+	}
+
+	data, err := h.prepareIndexData(c, googleID)
+	if err != nil {
+		return err
+	}
+	data["IsPolaroid"] = true
+	return c.Render("index", data, "layouts/main")
+}
+
 func (h *Handler) prepareIndexData(c *fiber.Ctx, googleID interface{}) (fiber.Map, error) {
 	data := baseTemplateData("Home", "Welcome to our site", "/")
 	data["Greeting"] = "Welcome to the homepage"
@@ -231,6 +245,7 @@ func (h *Handler) prepareIndexData(c *fiber.Ctx, googleID interface{}) (fiber.Ma
 	data["Error"] = ""
 	data["IsLoggedIn"] = googleID != nil
 	data["ShowDialog"] = false
+	data["IsPolaroid"] = false
 
 	if googleID != nil {
 		var user database.User

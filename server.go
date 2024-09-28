@@ -58,6 +58,9 @@ func main() {
 		ErrorHandler: CustomeErrorHandler,
 	})
 
+	//static files
+	app.Static("/public", "./public")
+
 	app.Use(func(c *fiber.Ctx) error {
 		sess, err := store.Get(c)
 		if err != nil {

@@ -1,0 +1,23 @@
+<div class="profile-picture flip">
+    <div class="flipper">
+        <div class="front">
+            <img
+                src="data:image/jpeg;base64,{{.Base64String}}"
+                alt="User Image"
+                width="250px"
+            />
+        </div>
+        <div class="back">
+            <form method="POST" action="/delete-dialog/{{.ID}}">
+                <button type="submit">
+                    <span
+                        class="iconify"
+                        data-icon="mdi-delete"
+                        height="32"
+                        width="32"
+                    ></span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

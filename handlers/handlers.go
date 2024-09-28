@@ -205,6 +205,19 @@ func (h *Handler) HandleAbout(c *fiber.Ctx) error {
 	return c.Render("about", data, "layouts/main")
 }
 
+func (h *Handler) HandleLogoutDialog(c *fiber.Ctx) error {
+	return h.ShowDialog(c, "Logout", "Are you sure you want to logout?", "Confirm", "/logout", "GET")
+}
+
+func (h *Handler) HandleDeleteImageDialog(c *fiber.Ctx) error {
+	imageID := c.Params("id")
+	if imageID == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid image ID"})
+	}
+
+	return h.ShowDialog(c, "Delete Image", "Are you sure you want to delete this image?", "Delete", "/delete/"+imageID, "POST")
+}
+
 func (h *Handler) prepareIndexData(c *fiber.Ctx, googleID interface{}) (fiber.Map, error) {
 	data := baseTemplateData("Home", "Welcome to our site", "/")
 	data["Greeting"] = "Welcome to the homepage"
@@ -265,10 +278,6 @@ func GetSessionAndUserID(c *fiber.Ctx) (*session.Session, interface{}, error) {
 	}
 
 	return sess, userGoogleID, nil
-}
-
-func (h *Handler) HandleLogoutDialog(c *fiber.Ctx) error {
-	return h.ShowDialog(c, "Logout", "Are you sure you want to logout?", "Yes", "/logout", "GET")
 }
 
 func (h *Handler) ShowDialog(c *fiber.Ctx, title, content, confirmText, target, method string) error {

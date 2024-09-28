@@ -102,11 +102,7 @@
                     alt="User Image"
                     width="250px"
                 />
-                <form
-                    method="POST"
-                    action="/delete/{{.ID}}"
-                    onsubmit="return confirm('Are you sure you want to delete this image?');"
-                >
+                <form method="POST" action="/delete-dialog/{{.ID}}">
                     <button type="submit">Delete</button>
                 </form>
             </div>

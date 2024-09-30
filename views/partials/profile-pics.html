@@ -1,4 +1,8 @@
-<div class="profile-picture flip">
+<div
+    id="capture-container-{{.ID}}"
+    class="profile-picture flip"
+    x-data="imageDownload({{.ID}})"
+>
     <div class="flipper">
         <div class="front">
             <img
@@ -7,9 +11,17 @@
                 width="250px"
             />
         </div>
-        <div class="back">
+        <div
+            class="back"
+            style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: row;
+            "
+        >
             <form method="POST" action="/delete-dialog/{{.ID}}">
-                <button type="submit">
+                <button type="submit" style="margin-bottom: 0px">
                     <span
                         class="iconify"
                         data-icon="mdi-delete"
@@ -18,6 +30,14 @@
                     ></span>
                 </button>
             </form>
+            <button @click="downloadStyledImage()">
+                <span
+                    class="iconify"
+                    data-icon="mdi-download"
+                    height="32"
+                    width="32"
+                ></span>
+            </button>
         </div>
     </div>
 </div>

@@ -10,6 +10,7 @@
             href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
         />
         <link rel="stylesheet" href="/public/profile-pic-styles.css" />
+        <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
         <script src="//code.iconify.design/1/1.0.6/iconify.min.js"></script>
         <script
             defer
@@ -51,3 +52,46 @@
         <footer>...</footer>
     </body>
 </html>
+<script>
+    document.addEventListener("alpine:init", () => {
+        Alpine.data("imageDownload", (id) => ({
+            id: id,
+            downloadStyledImage() {
+                const captureContainer = document.getElementById(
+                    `capture-container-${this.id}`,
+                );
+                if (!captureContainer) {
+                    console.error("Capture container not found");
+                    return;
+                }
+
+                // If it's a flip profile picture, get the front side
+                const elementToCapture =
+                    captureContainer.querySelector(".front") ||
+                    captureContainer;
+
+                html2canvas(elementToCapture, {
+                    scale: 1,
+
+                    backgroundColor: null,
+                    logging: true, // Enable logging for debugging
+                })
+                    .then((canvas) => {
+                        canvas.toBlob((blob) => {
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.style.display = "none";
+                            a.href = url;
+                            a.download = `styled_image_${this.id}.png`;
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                        }, "image/png");
+                    })
+                    .catch((error) => {
+                        console.error("Error in html2canvas:", error);
+                    });
+            },
+        }));
+    });
+</script>

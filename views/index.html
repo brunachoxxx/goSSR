@@ -8,17 +8,20 @@
         justify-content: center;
     "
     x-data="{
-        resetForm: {{.ResetForm}},
-        fileError: '',
-        validateFile(event) {
-            const file = event.target.files[0];
-            if (file && file.size > 5 * 1024 * 1024) {
-                this.fileError = 'File size exceeds 5MB limit';
-            } else {
-                this.fileError = '';
-            }
-        }
-    }"
+                resetForm: {{.ResetForm}},
+                fileError: '',
+                fileSelected: false,
+                validateFile(event) {
+                    const file = event.target.files[0];
+                    this.fileSelected = !!file;
+                    if (file && file.size > 5 * 1024 * 1024) {
+                        this.fileError = 'File size exceeds 5MB limit';
+                    } else {
+                        this.fileError = '';
+                    }
+                    console.log('File selected:', this.fileSelected, 'File error:', this.fileError);
+                }
+            }"
     x-init="$watch('resetForm', function(newValue) {
         if (newValue) {
             $refs.uploadForm.reset();
@@ -65,6 +68,7 @@
         enctype="multipart/form-data"
     >
         <input
+            x-ref="fileInput"
             type="file"
             name="file"
             accept="image/jpeg,image/png"
@@ -85,8 +89,8 @@
             <input
                 type="submit"
                 value="Load Image"
-                :disabled="fileError !== ''"
                 style="max-width: 180px; margin-bottom: 0"
+                :disabled="!fileSelected || fileError !== ''"
             />
         </div>
     </form>

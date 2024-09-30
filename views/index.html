@@ -27,7 +27,7 @@
     })"
 >
     <h1>{{.Title}}</h1>
-    <p>{{.Greeting}}</p>
+    <p>{{.Description}}</p>
 
     {{if not .IsLoggedIn}}
     <div>
@@ -64,14 +64,6 @@
         method="POST"
         enctype="multipart/form-data"
     >
-        <input
-            type="text"
-            name="email"
-            id="name"
-            placeholder="example@example.com"
-            value="{{if .UserEmail}}{{.UserEmail}}{{end}}"
-        />
-
         <input
             type="file"
             name="file"

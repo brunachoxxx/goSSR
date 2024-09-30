@@ -23,7 +23,7 @@ type Handler struct {
 }
 
 // Variables
-var pageTitle = "Simple SSR Page"
+var pageTitle = "Your ❤️ Images"
 var navItems = []NavItem{
 	{Link: "/", Text: "Home"},
 	{Link: "/about", Text: "About"},
@@ -239,8 +239,7 @@ func (h *Handler) HandlePolaroid(c *fiber.Ctx) error {
 }
 
 func (h *Handler) prepareIndexData(c *fiber.Ctx, googleID interface{}) (fiber.Map, error) {
-	data := baseTemplateData("Home", "Welcome to our site", "/")
-	data["Greeting"] = "Welcome to the homepage"
+	data := baseTemplateData("Your Beatiful Images", "Upload your beatiful images and share them as polaroids or profiles pics", "/")
 	data["ResetForm"] = false
 	data["Error"] = ""
 	data["IsLoggedIn"] = googleID != nil

@@ -207,7 +207,7 @@ func (h *Handler) HandleDeleteImage(c *fiber.Ctx) error {
 }
 
 func (h *Handler) HandleAbout(c *fiber.Ctx) error {
-	data := baseTemplateData("About Us", "Learn more about our company", "/about")
+	data := baseTemplateData("About this app", "", "/about")
 	return c.Render("about", data, "layouts/main")
 }
 

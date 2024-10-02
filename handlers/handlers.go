@@ -238,6 +238,11 @@ func (h *Handler) HandlePolaroid(c *fiber.Ctx) error {
 	return c.Render("index", data, "layouts/main")
 }
 
+func (h *Handler) HandleCookies(c *fiber.Ctx) error {
+	data := baseTemplateData("Cookies Policy", "", "/cookies")
+	return c.Render("cookies", data, "layouts/main")
+}
+
 func (h *Handler) prepareIndexData(c *fiber.Ctx, googleID interface{}) (fiber.Map, error) {
 	data := baseTemplateData("Your Beatiful Images", "Upload your beatiful images and share them as polaroids or profiles pics", "/")
 	data["ResetForm"] = false

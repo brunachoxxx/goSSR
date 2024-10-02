@@ -22,4 +22,5 @@ func Setup(app *fiber.App, db *gorm.DB) {
 	app.Get("/logout-dialog", h.HandleLogoutDialog)
 	app.Post("/delete-dialog/:id", h.HandleDeleteImageDialog)
 	app.Get("polaroid", h.HandlePolaroid)
+	app.Get("/cookies", h.HandleCookies)
 }

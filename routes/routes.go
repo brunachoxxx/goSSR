@@ -23,4 +23,7 @@ func Setup(app *fiber.App, db *gorm.DB) {
 	app.Post("/delete-dialog/:id", h.HandleDeleteImageDialog)
 	app.Get("polaroid", h.HandlePolaroid)
 	app.Get("/cookies", h.HandleCookies)
+	// New SEO-related routes
+	app.Get("/sitemap.xml", h.HandleSitemap)
+	app.Get("/robots.txt", h.HandleRobots)
 }

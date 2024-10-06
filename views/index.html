@@ -59,6 +59,7 @@
     <img
         src="data:image/jpeg;base64,{{.ProcessedImage}}"
         alt="Processed Image"
+        itemprop="image"
     />
     {{end}} {{if .IsLoggedIn}}
     <form
@@ -67,7 +68,9 @@
         method="POST"
         enctype="multipart/form-data"
     >
+        <label for="file-upload">Choose an image to upload:</label>
         <input
+            id="file-upload"
             x-ref="fileInput"
             type="file"
             name="file"

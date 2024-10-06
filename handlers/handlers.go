@@ -37,7 +37,7 @@ func NewHandler(db *gorm.DB) *Handler {
 	return &Handler{DB: db}
 }
 
-func baseTemplateData(title, description, currentPath string) fiber.Map {
+func (h *Handler) baseTemplateData(c *fiber.Ctx, title, description, currentPath string) fiber.Map {
 	currentNavItems := make([]NavItem, len(navItems))
 	for i, item := range navItems {
 		currentNavItems[i] = NavItem{
@@ -51,6 +51,7 @@ func baseTemplateData(title, description, currentPath string) fiber.Map {
 		"Title":       title,
 		"Description": description,
 		"NavItems":    currentNavItems,
+		"CurrentURL":  h.WithCurrentURL(c),
 	}
 }
 
@@ -207,7 +208,7 @@ func (h *Handler) HandleDeleteImage(c *fiber.Ctx) error {
 }
 
 func (h *Handler) HandleAbout(c *fiber.Ctx) error {
-	data := baseTemplateData("About this app", "", "/about")
+	data := h.baseTemplateData(c, "About this app", "", "/about")
 	return c.Render("about", data, "layouts/main")
 }
 
@@ -239,12 +240,12 @@ func (h *Handler) HandlePolaroid(c *fiber.Ctx) error {
 }
 
 func (h *Handler) HandleCookies(c *fiber.Ctx) error {
-	data := baseTemplateData("Cookies Policy", "", "/cookies")
+	data := h.baseTemplateData(c, "Cookies Policy", "", "/cookies")
 	return c.Render("cookies", data, "layouts/main")
 }
 
 func (h *Handler) prepareIndexData(c *fiber.Ctx, googleID interface{}) (fiber.Map, error) {
-	data := baseTemplateData("Your Beatiful Images", "Upload your beatiful images and share them as polaroids or profiles pics", "/")
+	data := h.baseTemplateData(c, "Your Beatiful Images", "Upload your beatiful images and share them as polaroids or profiles pics", "/")
 	data["ResetForm"] = false
 	data["Error"] = ""
 	data["IsLoggedIn"] = googleID != nil
@@ -306,7 +307,7 @@ func GetSessionAndUserID(c *fiber.Ctx) (*session.Session, interface{}, error) {
 }
 
 func (h *Handler) ShowDialog(c *fiber.Ctx, title, content, confirmText, target, method string) error {
-	data := baseTemplateData("Dialog", "Show dialog", "/dialog")
+	data := h.baseTemplateData(c, "Dialog", "Show dialog", "/dialog")
 	data["ShowDialog"] = true
 	data["DialogTitle"] = title
 	data["DialogContent"] = content
@@ -329,4 +330,12 @@ func (h *Handler) checkImageCount(googleID string) error {
 	}
 
 	return nil
+}
+
+func (h *Handler) WithCurrentURL(c *fiber.Ctx) string {
+	scheme := "http"
+	if c.Protocol() == "https" {
+		scheme = "https"
+	}
+	return scheme + "://" + c.Hostname() + c.OriginalURL()
 }

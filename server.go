@@ -68,6 +68,11 @@ func main() {
 	//static files
 	app.Static("/public", "./public")
 
+	// Favicon
+	app.Use(favicon.New(favicon.Config{
+		File: "./public/favicon.ico",
+	}))
+
 	app.Use(func(c *fiber.Ctx) error {
 		sess, err := store.Get(c)
 		if err != nil {
@@ -81,9 +86,5 @@ func main() {
 	// set up routes
 	routes.Setup(app, db)
 
-	// Favicon
-	app.Use(favicon.New(favicon.Config{
-		File: "./public/favicon.ico",
-	}))
 	log.Fatal(app.Listen(":3000"))
 }

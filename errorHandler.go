@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CustomeErrorHandler(c *fiber.Ctx, err error) error {
+func CustomErrorHandler(c *fiber.Ctx, err error) error {
 	// Default 500 status code for internal server errors
 	code := fiber.StatusInternalServerError
 

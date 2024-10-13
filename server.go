@@ -55,7 +55,7 @@ func main() {
 
 	app := fiber.New(fiber.Config{
 		Views:        engine,
-		ErrorHandler: CustomeErrorHandler,
+		ErrorHandler: CustomErrorHandler,
 	})
 
 	//static files
@@ -65,7 +65,7 @@ func main() {
 		sess, err := store.Get(c)
 		if err != nil {
 			// Use the custom error handler
-			return CustomeErrorHandler(c, fmt.Errorf("session error: %v", err))
+			return CustomErrorHandler(c, fmt.Errorf("session error: %v", err))
 		}
 		c.Locals("session", sess)
 		return c.Next()

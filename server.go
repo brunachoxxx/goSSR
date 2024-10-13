@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	postgresStorage "github.com/gofiber/storage/postgres/v3"
 	"github.com/gofiber/template/html/v2"
@@ -80,5 +81,9 @@ func main() {
 	// set up routes
 	routes.Setup(app, db)
 
+	// Favicon
+	app.Use(favicon.New(favicon.Config{
+		File: "./public/favicon.ico",
+	}))
 	log.Fatal(app.Listen(":3000"))
 }

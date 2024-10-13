@@ -27,7 +27,13 @@ func main() {
 	}
 
 	// Initialize storage config
-	storage := postgresStorage.New(database.ConfigStorage)
+	storage := postgresStorage.New(postgresStorage.Config{
+		ConnectionURI: os.Getenv("STORAGE_DB_URL"),
+		Table:         os.Getenv("STORAGE_DB_TABLE"),
+		SSLMode:       "disable",
+		Reset:         false,
+		GCInterval:    10 * time.Second,
+	})
 
 	// Close the storage when the program terminates
 	defer storage.Close()

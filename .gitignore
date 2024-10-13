@@ -11,6 +11,12 @@
 # envairoment
 .env
 
+#docker compose
+docker-compose.yml
+docker-compose.yaml
+docker-compose.override.yml
+compose.yaml
+
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 

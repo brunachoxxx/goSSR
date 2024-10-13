@@ -130,22 +130,26 @@
                     captureContainer;
 
                 html2canvas(elementToCapture, {
-                    scale: 1,
+                    scale: 2,
 
                     backgroundColor: null,
                     logging: true, // Enable logging for debugging
                 })
                     .then((canvas) => {
-                        canvas.toBlob((blob) => {
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement("a");
-                            a.style.display = "none";
-                            a.href = url;
-                            a.download = `styled_image_${this.id}.png`;
-                            document.body.appendChild(a);
-                            a.click();
-                            window.URL.revokeObjectURL(url);
-                        }, "image/png");
+                        canvas.toBlob(
+                            (blob) => {
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.style.display = "none";
+                                a.href = url;
+                                a.download = `styled_image_${this.id}.png`;
+                                document.body.appendChild(a);
+                                a.click();
+                                window.URL.revokeObjectURL(url);
+                            },
+                            "image/png",
+                            1.0,
+                        );
                     })
                     .catch((error) => {
                         console.error("Error in html2canvas:", error);

@@ -8,7 +8,7 @@
         justify-content: center;
     "
     x-data="{
-                resetForm: {{.ResetForm}},
+                resetForm: {{if .ResetForm}}true{{else}}false{{end}},
                 fileError: '',
                 fileSelected: false,
                 validateFile(event) {
@@ -86,9 +86,11 @@
                 gap: 10px;
             "
         >
-            {{if .UserImages}} {{if .IsPolaroid}}<a href="/" role="button"
-                >Normal</a
-            >{{else}}<a href="/polaroid" role="button">Polaroid</a>{{end}}
+            {{if .UserImages}} {{if .IsPolaroid}}
+            <a href="/" role="button">Normal</a>
+            {{else}}
+            <a href="/polaroid" role="button">Polaroid</a>
+            {{end}} {{end}}
             <input
                 type="submit"
                 value="Upload"
@@ -110,13 +112,13 @@
                 justify-content: center;
             "
         >
-            {{if .IsPolaroid}} {{range .UserImages}} {{template
-            "partials/polaroid-pics" .}} {{end}} {{else}} {{range .UserImages}}
-            {{template "partials/profile-pics" .}} {{end}} {{end}}
+            {{if .UserImages}} {{if .IsPolaroid}} {{range .UserImages}}
+            {{template "partials/polaroid-pics" .}} {{end}} {{else}} {{range
+            .UserImages}} {{template "partials/profile-pics" .}} {{end}} {{end}}
+            {{else}}
+            <p>No images uploaded yet.</p>
+            {{end}}
         </div>
-        {{else}}
-        <p>No images uploaded yet.</p>
-        {{end}}
     </div>
     {{end}}
 </div>

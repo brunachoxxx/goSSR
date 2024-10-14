@@ -11,6 +11,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	postgresStorage "github.com/gofiber/storage/postgres/v3"
 	"github.com/gofiber/template/html/v2"
@@ -31,7 +32,7 @@ func main() {
 	storage := postgresStorage.New(postgresStorage.Config{
 		ConnectionURI: os.Getenv("STORAGE_DB_URL"),
 		Table:         os.Getenv("STORAGE_DB_TABLE"),
-		SSLMode:       "disable",
+		SSLMode:       os.Getenv("STORAGE_DB_SSL_MODE"),
 		Reset:         false,
 		GCInterval:    10 * time.Second,
 	})
@@ -82,6 +83,51 @@ func main() {
 		c.Locals("session", sess)
 		return c.Next()
 	})
+
+	// Security Headers
+	app.Use(func(c *fiber.Ctx) error {
+		c.Set("X-XSS-Protection", "1; mode=block")
+		c.Set("X-Content-Type-Options", "nosniff")
+		c.Set("X-Frame-Options", "DENY")
+		c.Set("Referrer-Policy", "strict-origin-when-cross-origin")
+		return c.Next()
+	})
+
+	// Content Security Policy
+	app.Use(func(c *fiber.Ctx) error {
+		c.Set("Content-Security-Policy", "default-src 'self'; "+
+			"img-src 'self' data: https://cdn.buymeacoffee.com; "+
+			"script-src 'self' 'unsafe-inline' 'unsafe-eval' "+
+			"https://cdn.jsdelivr.net "+
+			"https://html2canvas.hertzen.com "+
+			"https://code.iconify.design "+
+			"https://cdnjs.buymeacoffee.com; "+
+			"style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "+
+			"connect-src 'self' https://cdnjs.buymeacoffee.com; "+
+			"frame-src 'self' https://cdnjs.buymeacoffee.com; "+
+			"font-src 'self' https://cdn.buymeacoffee.com")
+		return c.Next()
+	})
+
+	app.Use(limiter.New(limiter.Config{
+		Max:        100,
+		Expiration: 1 * time.Minute,
+		KeyGenerator: func(c *fiber.Ctx) string {
+			if userID := c.Locals("userID"); userID != nil {
+				return fmt.Sprintf("%s:%v", c.IP(), userID)
+			}
+			return c.IP()
+		},
+		LimitReached: func(c *fiber.Ctx) error {
+			return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+				"error":       "Rate limit exceeded. Please try again later.",
+				"retry_after": c.GetRespHeader("X-RateLimit-Reset"),
+			})
+		},
+		SkipFailedRequests:     false,
+		SkipSuccessfulRequests: false,
+		LimiterMiddleware:      limiter.SlidingWindow{},
+	}))
 
 	// set up routes
 	routes.Setup(app, db)

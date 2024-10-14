@@ -88,7 +88,7 @@ func main() {
 	app.Use(func(c *fiber.Ctx) error {
 		c.Set("X-XSS-Protection", "1; mode=block")
 		c.Set("X-Content-Type-Options", "nosniff")
-		c.Set("X-Frame-Options", "DENY")
+		c.Set("X-Frame-Options", "SAMEORIGIN")
 		c.Set("Referrer-Policy", "strict-origin-when-cross-origin")
 		return c.Next()
 	})

@@ -93,22 +93,6 @@ func main() {
 		return c.Next()
 	})
 
-	// Content Security Policy
-	app.Use(func(c *fiber.Ctx) error {
-		c.Set("Content-Security-Policy", "default-src 'self'; "+
-			"img-src 'self' data: https://cdn.buymeacoffee.com; "+
-			"script-src 'self' 'unsafe-inline' 'unsafe-eval' "+
-			"https://cdn.jsdelivr.net "+
-			"https://html2canvas.hertzen.com "+
-			"https://code.iconify.design "+
-			"https://cdnjs.buymeacoffee.com; "+
-			"style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "+
-			"connect-src 'self' https://cdnjs.buymeacoffee.com; "+
-			"frame-src 'self' https://cdnjs.buymeacoffee.com; "+
-			"font-src 'self' https://cdn.buymeacoffee.com")
-		return c.Next()
-	})
-
 	app.Use(limiter.New(limiter.Config{
 		Max:        100,
 		Expiration: 1 * time.Minute,

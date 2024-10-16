@@ -130,6 +130,8 @@
                     captureContainer;
 
                 html2canvas(elementToCapture, {
+                    width: elementToCapture.offsetWidth,
+                    height: elementToCapture.offsetHeight,
                     scale: 2,
                     backgroundColor: null,
                     logging: true, // Enable logging for debugging

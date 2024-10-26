@@ -245,7 +245,7 @@ func (h *Handler) HandleCookies(c *fiber.Ctx) error {
 }
 
 func (h *Handler) prepareIndexData(c *fiber.Ctx, googleID interface{}) (fiber.Map, error) {
-	data := h.baseTemplateData(c, "Your Beatiful Images", "Upload your beatiful images and share them as polaroids or profiles pics", "/")
+	data := h.baseTemplateData(c, "Your Beatiful Images", "Quick and easy", "/")
 	data["ResetForm"] = false
 	data["Error"] = ""
 	data["IsLoggedIn"] = googleID != nil

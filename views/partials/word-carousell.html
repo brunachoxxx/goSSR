@@ -1,0 +1,103 @@
+<div x-data="carousel">
+    <div class="carousel">
+        <div class="carousel-inner">
+            <template x-for="(slide, index) in slides" :key="index">
+                <div
+                    class="carousel-item"
+                    :class="{ 'active': currentIndex === index }"
+                    x-show="currentIndex === index"
+                >
+                    <h1 x-text="slide"></h1>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>
+
+<script>
+    // All carousel logic in one place
+    document.addEventListener("alpine:init", () => {
+        Alpine.data("carousel", () => ({
+            // Data
+            currentIndex: 0,
+            slides: [
+                "📤 Upload your pics",
+                "📸 We will process them inmediately as Polaroids and profiles pics",
+                "📱 Share them the way you want",
+            ],
+            interval: null,
+            autoPlayInterval: 3000,
+
+            // Lifecycle
+            init() {
+                this.startAutoPlay();
+            },
+
+            destroy() {
+                this.stopAutoPlay();
+            },
+
+            // Methods
+            next() {
+                this.currentIndex =
+                    this.currentIndex === this.slides.length - 1
+                        ? 0
+                        : this.currentIndex + 1;
+            },
+
+            prev() {
+                this.currentIndex =
+                    this.currentIndex === 0
+                        ? this.slides.length - 1
+                        : this.currentIndex - 1;
+            },
+
+            startAutoPlay() {
+                this.interval = setInterval(
+                    () => this.next(),
+                    this.autoPlayInterval,
+                );
+            },
+
+            stopAutoPlay() {
+                if (this.interval) {
+                    clearInterval(this.interval);
+                }
+            },
+        }));
+    });
+</script>
+<style>
+    .carousel {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .carousel-inner {
+        position: relative;
+        width: 100%;
+    }
+
+    .carousel-item {
+        width: 100%; 
+        text-align: center;
+    }
+
+    .carousel-prev,
+    .carousel-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .carousel-prev {
+        left: 10px;
+    }
+
+    .carousel-next {
+        right: 10px;
+    }
+</style>

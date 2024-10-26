@@ -31,8 +31,7 @@
 >
     <h1>{{.Title}}</h1>
     <p>{{.Description}}</p>
-
-    {{if not .IsLoggedIn}}
+    {{if not .IsLoggedIn}} {{template "partials/word-carousell" .}}
     <div>
         <a
             href="/auth/google"
@@ -103,7 +102,7 @@
         {{if .FlashMessage}}
         <div class="flash-message">{{.FlashMessage}}</div>
         {{end}}
-        <h3>Your Images:</h3>
+        <h1>Your Images:</h1>
         <div
             style="
                 display: flex;

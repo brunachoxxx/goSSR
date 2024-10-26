@@ -72,7 +72,9 @@
         position: relative;
         width: 100%;
         overflow: hidden;
+        min-height: 200px;
     }
+
 
     .carousel-inner {
         position: relative;
@@ -93,11 +95,9 @@
         cursor: pointer;
     }
 
-    .carousel-prev {
-        left: 10px;
-    }
-
-    .carousel-next {
-        right: 10px;
+    @media screen and (max-width: 500px) {
+        .carousel {
+            min-height: 200px;
+        }
     }
 </style>

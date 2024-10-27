@@ -1,0 +1,20 @@
+<nav class="container desktop-nav">
+    <ul>
+        <li><strong>{{.PageTitle}}</strong></li>
+    </ul>
+    <ul>
+        {{range .NavItems}}
+        <li>
+            <a href="{{.Link}}" {{if .IsCurrent}}class="secondary" {{end}}
+                >{{.Text}}</a
+            >
+        </li>
+        {{end}} {{if .IsLoggedIn}}
+        <li>
+            <a href="/logout-dialog" role="button">
+                <span class="iconify" data-icon="mdi-logout"></span>
+            </a>
+        </li>
+        {{end}}
+    </ul>
+</nav>

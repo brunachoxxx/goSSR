@@ -48,31 +48,17 @@
         <header>
             <div style="display: flex; justify-content: flex-end"></div>
         </header>
-        <nav class="container">
-            <ul>
-                <li><strong>{{.PageTitle}}</strong></li>
-            </ul>
-            <ul>
-                {{range .NavItems}}
-                <li>
-                    <a
-                        href="{{.Link}}"
-                        {{if
-                        .IsCurrent}}class="secondary"
-                        {{end}}
-                        >{{.Text}}</a
-                    >
-                </li>
-                {{end}} {{if .IsLoggedIn}}
-                <li>
-                    <a href="/logout-dialog" role="button">
-                        <span class="iconify" data-icon="mdi-logout"></span>
-                    </a>
-                </li>
-
-                {{end}}
-            </ul>
-        </nav>
+        <div
+            x-data="{ isMobile: window.innerWidth <= 768 }"
+            @resize.window="isMobile = window.innerWidth <= 768"
+        >
+            <template x-if="!isMobile">
+                {{template "partials/desktop_nav" .}}
+            </template>
+            <template x-if="isMobile">
+                {{template "partials/mobile_nav" .}}
+            </template>
+        </div>
         <main class="container">{{embed}}</main>
         {{template "partials/dialog" .}}
         <footer></footer>

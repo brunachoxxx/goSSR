@@ -100,7 +100,7 @@
 }
 
 .mobile-nav-menu {
-    position: absolute;
+    position: fixed;
     top: 100px; /* Adjust based on your header height */
     left: 0;
     right: 0;
@@ -121,7 +121,8 @@
 }
 
 .mobile-nav-menu li {
-    width: 100%;
+    width: 100%; /* Change from 100% to auto */
+    text-align: center;
 }
 
 .mobile-nav-menu a {

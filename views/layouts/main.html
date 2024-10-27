@@ -141,7 +141,23 @@
                     logging: true, // Enable logging for debugging
                 })
                     .then((canvas) => {
-                        canvas.toBlob(
+                        // Create a new canvas with 80% width
+                        const resizedCanvas = document.createElement("canvas");
+                        const ctx = resizedCanvas.getContext("2d");
+
+                        resizedCanvas.width = canvas.width * 0.8;
+                        resizedCanvas.height = canvas.height;
+
+                        // Draw original canvas onto resized canvas
+                        ctx.drawImage(
+                            canvas,
+                            0,
+                            0,
+                            resizedCanvas.width,
+                            resizedCanvas.height,
+                        );
+
+                        resizedCanvas.toBlob(
                             (blob) => {
                                 const url = URL.createObjectURL(blob);
                                 const a = document.createElement("a");
